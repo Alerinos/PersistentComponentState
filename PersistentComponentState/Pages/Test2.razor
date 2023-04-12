@@ -1,0 +1,63 @@
+﻿@page "/test2"
+@using System.Text.Json
+
+@implements IDisposable
+@inject PersistentComponentState ApplicationState
+
+@code {
+    private Model? data;
+    private PersistingComponentStateSubscription persistingSubscription;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var jsonString = File.ReadAllText("data.json");
+
+        data = JsonSerializer.Deserialize<Model>(jsonString);
+    }
+
+    private Task PersistData()
+    {
+        ApplicationState.PersistAsJson("test2", data);
+
+        return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+    {
+        persistingSubscription.Dispose();
+    }
+
+    class Model
+    {
+        public List<ArticleDto>? Recommendation { get; set; }
+        public List<ArticleDto>? Hot { get; set; }
+        public List<ArticleDto>? Popular { get; set; }
+    }
+
+    public class ArticleDto
+    {
+        public Guid Id { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string Culture { get; set; } = string.Empty;
+        //public List<string>? Cultures { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public bool Nsfw { get; set; } = false;
+        public bool Sponsor { get; set; } = false;
+        public string? Permission { get; set; }
+        public TimeSpan ReadingTime { get; set; }
+        public bool ShowAuthor { get; set; } = false;
+        public Guid AuthorId { get; set; } = Guid.Empty;
+        public string? AuthorName { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime Updated { get; set; }
+        public DateTime? Expirated { get; set; }
+        public List<string>? Tags { get; set; }
+        public string? ImageHeader { get; set; }
+
+        public ArticleDto() { }
+    }
+}
