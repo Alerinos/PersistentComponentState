@@ -4,8 +4,58 @@
 @implements IDisposable
 @inject PersistentComponentState ApplicationState
 
+@if (_model is not null && _model.Recommendation is not null)
+{
+    foreach (var d in _model.Recommendation)
+    {
+        <div>
+            @d.Id
+            @d.Status
+            @d.Culture
+            @d.Name
+            @d.Title
+            @d.Content
+            @d.Description
+        </div>
+    }
+}
+
+@if (_model is not null && _model.Hot is not null)
+{
+    foreach (var d in _model.Hot)
+    {
+        <div>
+            @d.Id
+            @d.Status
+            @d.Culture
+            @d.Name
+            @d.Title
+            @d.Content
+            @d.Description
+        </div>
+    }
+}
+
+@if (_model is not null && _model.Popular is not null)
+{
+    foreach (var d in _model.Popular)
+    {
+        <div>
+            @d.Id
+            @d.Status
+            @d.Culture
+            @d.Name
+            @d.Title
+            @d.Content
+            @d.Description
+        </div>
+    }
+}
+
+
+
 @code {
-    private Model? data;
+    Model? _model;
     private PersistingComponentStateSubscription persistingSubscription;
 
 
@@ -17,17 +67,17 @@
         {
             var jsonString = File.ReadAllText("data.json");
 
-            data = JsonSerializer.Deserialize<Model>(jsonString);
+            _model = JsonSerializer.Deserialize<Model>(jsonString);
         }
         else
         {
-            data = restored!;
+            _model = restored!;
         }
     }
 
     private Task PersistData()
     {
-        ApplicationState.PersistAsJson("test1", data);
+        ApplicationState.PersistAsJson("test1", _model);
 
         return Task.CompletedTask;
     }
